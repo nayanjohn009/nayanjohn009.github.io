@@ -872,6 +872,7 @@
   // Copy email
   var copy = document.getElementById('copyEmail');
   copy.addEventListener('click', function () {
+    trackOut('mailto:');
     if (!navigator.clipboard) { location.href = 'mailto:iamparam31@gmail.com'; return; }
     navigator.clipboard.writeText('iamparam31@gmail.com').then(function () {
       copy.textContent = 'Copied';
@@ -986,6 +987,7 @@
   }
   function palRun(c) {
     pal.close();
+    if (c.go.charAt(0) !== '#') trackOut(c.go);
     if (c.go.charAt(0) === '#' || c.go.indexOf('mailto:') === 0) location.href = c.go;
     else window.open(c.go, '_blank', 'noopener');
   }
@@ -1214,5 +1216,18 @@
   });
 })();
 </script>
+<script>
+// GoatCounter counts page views on its own; this adds an event for each outbound link opened
+function trackOut(url) {
+  if (!window.goatcounter || !goatcounter.count) return;
+  var name = url.indexOf('mailto:') === 0 ? 'email' : url.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, '');
+  goatcounter.count({ path: 'click/' + name, title: 'Opened ' + name, event: true });
+}
+document.addEventListener('click', function (e) {
+  var a = e.target.closest && e.target.closest('a[href^="http"], a[href^="mailto:"]');
+  if (a) trackOut(a.getAttribute('href'));
+});
+</script>
+<script data-goatcounter="https://param-m1-portfolio.goatcounter.com/count" async src="https://gc.zgo.at/count.js"></script>
 </body>
 </html>
